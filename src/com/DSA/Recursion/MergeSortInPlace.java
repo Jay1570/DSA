@@ -2,7 +2,7 @@ package com.DSA.Recursion;
 
 import java.util.Arrays;
 
-public class MergeSortIP {
+public class MergeSortInPlace {
     public static void main(String[] args) {
         int[] arr = {5, 4, 3, 2, 1};
         mergeSort(arr, 0, arr.length);
