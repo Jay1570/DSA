@@ -1,4 +1,4 @@
-package com.DSA.Recursion;
+package com.DSA.Sort;
 
 import java.util.Arrays;
 
