@@ -1,18 +1,17 @@
-package com.DSA.Recursion.BackTracking;
+package com.DSA.Leetcode;
 
-public class SudokuSolver {
+public class Problem37 {
     public static void main(String[] args) {
-        int[][] board = new int[][]
-        {
-                {3, 0, 6, 5, 0, 8, 4, 0, 0},
-                {5, 2, 0, 0, 0, 0, 0, 0, 0},
-                {0, 8, 7, 0, 0, 0, 0, 3, 1},
-                {0, 0, 3, 0, 1, 0, 0, 8, 0},
-                {9, 0, 0, 8, 6, 3, 0, 0, 5},
-                {0, 5, 0, 0, 9, 0, 6, 0, 0},
-                {1, 3, 0, 0, 0, 0, 2, 5, 0},
-                {0, 0, 0, 0, 0, 0, 0, 7, 4},
-                {0, 0, 5, 2, 0, 6, 3, 0, 0}
+        char[][] board = {
+                {'3', '.', '6', '5', '.', '8', '4', '.', '.'},
+                {'5', '2', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '8', '7', '.', '.', '.', '.', '3', '1'},
+                {'.', '.', '3', '.', '1', '.', '.', '8', '.'},
+                {'9', '.', '.', '8', '6', '3', '.', '.', '5'},
+                {'.', '5', '.', '.', '9', '.', '6', '.', '.'},
+                {'1', '3', '.', '.', '.', '.', '.', '5', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '7', '4'},
+                {'.', '.', '5', '2', '.', '6', '3', '.', '.'}
         };
         if(solve(board)) {
             display(board);
@@ -20,14 +19,14 @@ public class SudokuSolver {
             System.out.println("Cannot Solve");
         }
     }
-    static boolean solve(int[][] board) {
+    static boolean solve(char[][] board) {
         int n = board.length;
         int row = -1;
         int col = -1;
         boolean emptyLeft = true;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (board[i][j] == 0) {
+                if (board[i][j] == '.') {
                     row = i;
                     col = j;
                     emptyLeft = false;
@@ -43,29 +42,29 @@ public class SudokuSolver {
             return true;
         }
         // backtrack
-        for (int number = 1; number <= n; number++) {
+        for (char number = '1'; number <= '9'; number++) {
             if(isSafe(board, row, col, number)) {
                 board[row][col] = number;
                 if(solve(board)) {
                     return true;
                 } else {
-                 board[row][col] = 0;
+                    board[row][col] = '.';
                 }
             }
         }
         return false;
     }
 
-    private static void display(int[][] board) {
-        for (int[] n : board) {
-            for (int num: n) {
+    private static void display(char[][] board) {
+        for (char[] n : board) {
+            for (char num: n) {
                 System.out.print(num + " ");
             }
             System.out.println();
         }
     }
 
-    static boolean isSafe(int[][] board, int row, int col, int num) {
+    static boolean isSafe(char[][] board, int row, int col, char num) {
         // check the row
         for(int i = 0; i < board.length; i++) {
             // check if number is in the row
@@ -74,7 +73,7 @@ public class SudokuSolver {
             }
         }
         // check the column
-        for(int[] nums : board) {
+        for(char[] nums : board) {
             // check if number is in the row
             if(nums[col] == num) {
                 return false;
