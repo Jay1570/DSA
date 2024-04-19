@@ -1,0 +1,126 @@
+package com.DSA.CustomCollections;
+
+public class SinglyLinkedList<T> {
+
+    private Node head;  // points to the first node of List
+    private Node tail;  // points to the last node of List
+
+    private int size;
+
+    public SinglyLinkedList() {
+        this.size = 0;
+    }
+
+    public void insertFirst (T data) {
+        Node node = new Node(data);
+        node.next = head;
+        head = node;
+        if (tail == null) {
+            tail = head;
+        }
+        size++;
+    }
+
+    public void insertLast (T data) {
+        if (tail == null) {
+            insertFirst(data);
+            return;
+        }
+        Node node = new Node(data);
+        tail.next = node;
+        tail = node;
+        size++;
+    }
+
+    public void insert(T data, int index) {
+        if (index == 0) {
+            insertFirst(data);
+            return;
+        }
+        if (index == size) {
+            insertLast(data);
+            return;
+        }
+        Node temp = head;
+        for (int i = 1; i < index; i++) {
+            temp = temp.next;
+        }
+        Node node = new Node(data, temp.next);
+        temp.next = node;
+        size++;
+    }
+
+    public T deleteFirst() {
+        T data = head.data;
+        head = head.next;
+        if(head == null) {
+            tail = null;
+        }
+        size--;
+        return data;
+    }
+
+    public T deleteLast() {
+        if (head == null) { // handle empty list scenario
+            return null;
+        }
+        if (size <= 1) {
+            return deleteFirst();
+        }
+        Node secondLast = get(size - 2);
+        T data = tail.data;
+        tail = secondLast;
+        tail.next = null;
+        return data;
+    }
+
+    public T delete(int index) {
+        if(index == 0) {
+            return deleteFirst();
+        }
+        if(index == size - 1) {
+            return deleteLast();
+        }
+        Node prev = get(index - 1);
+        T data = prev.next.data;
+        prev.next = prev.next.next;
+        return data;
+    }
+
+    public T getValue (int index) {
+        Node node = head;
+        for (int i = 0; i < index; i++) {
+            node =node.next;
+        }
+        return node.data;
+    }
+
+    private Node get (int index) {
+        Node node = head;
+        for (int i = 0; i < index; i++) {
+            node =node.next;
+        }
+        return node;
+    }
+
+    public void display() {
+        Node temp = head;
+        while (temp != null) {
+            System.out.print(temp.data + " -> ");
+            temp = temp.next;
+        }
+        System.out.println("END");
+    }
+
+    private class Node {
+        private T data;
+        private Node next;
+        public Node(T data) {
+            this.data = data;
+        }
+        public Node(T data, Node next) {
+            this.data = data;
+            this.next = next;
+        }
+    }
+}
