@@ -33,6 +33,10 @@ public class SinglyLinkedList<T> {
     }
 
     public void insert(T data, int index) {
+        if (index < 0 || index > size - 1) {
+            System.out.println("Invalid index...");
+            return;
+        }
         if (index == 0) {
             insertFirst(data);
             return;
@@ -41,16 +45,16 @@ public class SinglyLinkedList<T> {
             insertLast(data);
             return;
         }
-        Node temp = head;
-        for (int i = 1; i < index; i++) {
-            temp = temp.next;
-        }
+        Node temp = get(index - 1);
         Node node = new Node(data, temp.next);
         temp.next = node;
         size++;
     }
 
-    public T deleteFirst() {
+    public Object deleteFirst() {
+        if(head == null) {
+            return "List is empty";
+        }
         T data = head.data;
         head = head.next;
         if(head == null) {
@@ -60,9 +64,9 @@ public class SinglyLinkedList<T> {
         return data;
     }
 
-    public T deleteLast() {
-        if (head == null) { // handle empty list scenario
-            return null;
+    public Object deleteLast() {
+        if(head == null) {
+            return "List is empty";
         }
         if (size <= 1) {
             return deleteFirst();
@@ -74,7 +78,13 @@ public class SinglyLinkedList<T> {
         return data;
     }
 
-    public T delete(int index) {
+    public Object delete(int index) {
+        if (index < 0 || index > size - 1) {
+            return "Invalid index...";
+        }
+        if(head == null) {
+            return "List is empty";
+        }
         if(index == 0) {
             return deleteFirst();
         }
@@ -98,7 +108,7 @@ public class SinglyLinkedList<T> {
     private Node get (int index) {
         Node node = head;
         for (int i = 0; i < index; i++) {
-            node =node.next;
+            node = node.next;
         }
         return node;
     }
