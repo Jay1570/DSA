@@ -2,8 +2,9 @@ package com.DSA.CustomCollections;
 
 public class Main {
     public static void main(String[] args) {
-        singlyLinkedList();
-        doublyLinkedList();
+        //singlyLinkedList();
+        //doublyLinkedList();
+        circularLinkedList();
     }
     static void singlyLinkedList() {
         SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
@@ -48,5 +49,13 @@ public class Main {
         System.out.println(list.delete(1));
         list.display();
         list.displayRev();
+    }
+    static void circularLinkedList() {
+        CircularLinkedList<Integer> list = new CircularLinkedList<>();
+        list.insert(12);
+        list.insert(17);
+        list.insert(34);
+        list.insert(10);
+        list.display();
     }
 }
