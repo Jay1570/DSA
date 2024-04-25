@@ -1,6 +1,7 @@
 package com.DSA.CustomCollections;
 
 public class Main {
+
     public static void main(String[] args) {
         //singlyLinkedList();
         //doublyLinkedList();

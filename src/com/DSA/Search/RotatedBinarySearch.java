@@ -2,8 +2,8 @@ package com.DSA.Search;
 
 public class RotatedBinarySearch {
     public static void main(String[] args) {
-        int[] arr = {2, 2, 2, 2, 2, 2, 2, 2, 2, 1};
-        System.out.println(search(arr, 0));
+        int[] arr = {3, 1, 1, 1, 1, 1};
+        System.out.println(search(arr, 3));
         System.out.println(rotationCount(arr));
     }
     public static int search(int[] arr, int target) {
