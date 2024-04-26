@@ -1,5 +1,7 @@
 package com.DSA.CustomCollections;
 
+import java.util.LinkedList;
+
 public class SinglyLinkedList<T> {
 
     private Node head;  // points to the first node of List
@@ -11,7 +13,7 @@ public class SinglyLinkedList<T> {
         this.size = 0;
     }
 
-    public void insertFirst (T data) {
+    public void insertFirst(T data) {
         Node node = new Node(data);
         node.next = head;
         head = node;
@@ -21,7 +23,7 @@ public class SinglyLinkedList<T> {
         size++;
     }
 
-    public void insertLast (T data) {
+    public void insertLast(T data) {
         if (tail == null) {
             insertFirst(data);
             return;
@@ -51,13 +53,27 @@ public class SinglyLinkedList<T> {
         size++;
     }
 
+    public void insertRec(T data, int index) {
+        head = insertRec(index, data, head);
+    }
+
+    private Node insertRec(int index, T data, Node node) {
+        if (index == 0) {
+            Node temp = new Node(data, node);
+            size++;
+            return temp;
+        }
+        node.next = insertRec(index - 1, data, node.next);
+        return node;
+    }
+
     public Object deleteFirst() {
-        if(head == null) {
+        if (head == null) {
             return "List is empty";
         }
         T data = head.data;
         head = head.next;
-        if(head == null) {
+        if (head == null) {
             tail = null;
         }
         size--;
@@ -65,7 +81,7 @@ public class SinglyLinkedList<T> {
     }
 
     public Object deleteLast() {
-        if(head == null) {
+        if (head == null) {
             return "List is empty";
         }
         if (size <= 1) {
@@ -75,6 +91,7 @@ public class SinglyLinkedList<T> {
         T data = tail.data;
         tail = secondLast;
         tail.next = null;
+        size--;
         return data;
     }
 
@@ -82,30 +99,31 @@ public class SinglyLinkedList<T> {
         if (index < 0 || index > size - 1) {
             return "Invalid index...";
         }
-        if(head == null) {
+        if (head == null) {
             return "List is empty";
         }
-        if(index == 0) {
+        if (index == 0) {
             return deleteFirst();
         }
-        if(index == size - 1) {
+        if (index == size - 1) {
             return deleteLast();
         }
         Node prev = get(index - 1);
         T data = prev.next.data;
         prev.next = prev.next.next;
+        size--;
         return data;
     }
 
-    public T getValue (int index) {
+    public T getValue(int index) {
         Node node = head;
         for (int i = 0; i < index; i++) {
-            node =node.next;
+            node = node.next;
         }
         return node.data;
     }
 
-    private Node get (int index) {
+    private Node get(int index) {
         Node node = head;
         for (int i = 0; i < index; i++) {
             node = node.next;
@@ -122,15 +140,33 @@ public class SinglyLinkedList<T> {
         System.out.println("END");
     }
 
-    private class Node {
+    class Node {
         private T data;
         private Node next;
+
         public Node(T data) {
             this.data = data;
         }
+
         public Node(T data, Node next) {
             this.data = data;
             this.next = next;
         }
+    }
+
+    // questions
+    //problem83
+    public void duplicates() {
+        Node node = head;
+        while (node.next != null) {
+            if (node.data == node.next.data) {
+                node.next = node.next.next;
+                size--;
+            } else {
+                node = node.next;
+            }
+        }
+        tail = node;
+        tail.next = null;
     }
 }
