@@ -154,6 +154,7 @@ public class BubbleSort {
 
     public void mergeSort() {
         head = sortList(head);
+        tail = get(size - 1);
     }
 
     private Node sortList(Node head) {
@@ -196,6 +197,107 @@ public class BubbleSort {
         return mid;
     }
 
+    //recursive reverse
+    public void reverse() {
+        reverse(head);
+    }
+
+    private void reverse(Node node) {
+        if (node == tail) {
+            head = tail;
+            return;
+        }
+
+        reverse(node.next);
+
+        tail.next = node;
+        tail = node;
+        tail.next = null;
+    }
+
+    public void reverseIterative() {
+        head = reverseIterative(head);
+        tail = get(size - 1);
+    }
+    //iterative reverse
+    private Node reverseIterative(Node head) {
+        if(head == null || head.next == null) {
+            return head;
+        }
+
+        Node prev = null;
+        Node pres = head;
+        Node next = pres.next;
+
+        while (pres != null) {
+            pres.next = prev;
+            prev = pres;
+            pres = next;
+            if (next != null){
+                next = next.next;
+            }
+        }
+        return prev;
+    }
+    public boolean isPalindrome() {
+        tail = get(size - 1);
+        return isPalindrome(head);
+    }
+    private boolean isPalindrome(Node head) {
+        Node mid = getMid(head);
+        Node secondHalf = reverseIterative(mid);
+        Node head2 = secondHalf;
+
+        // compare both the halves
+        while (head != null && secondHalf != null) {
+            if (head.data != secondHalf.data) {
+                break;
+            }
+            head = head.next;
+            secondHalf = secondHalf.next;
+        }
+        reverseIterative(head2);
+        return head == null || secondHalf == null;
+    }
+
+    public void reverseBetween(int left, int right) {
+        head = reverseBetween(head, left, right);
+        tail = get(size - 1);
+    }
+
+    private Node reverseBetween(Node head, int left, int right) {
+        if (left == right) {
+            return head;
+        }
+        //skip left - 1 nodes
+        Node pres = head;
+        Node prev = null;
+
+        for (int i = 0; pres != null && i < left - 1; i++) {
+            prev = pres;
+            pres = pres.next;
+        }
+        Node last = prev;
+        Node newEnd = pres;
+        Node next = pres.next;
+        // reverse between left and right
+        for (int i = 0; pres != null && i < right - left + 1; i++) {
+            pres.next = prev;
+            prev = pres;
+            pres = next;
+            if (next != null){
+                next = next.next;
+            }
+        }
+        if(last != null) {
+            last.next = prev;
+        } else {
+            head = prev;
+        }
+        newEnd.next = pres;
+        return head;
+    }
+
     class Node {
         private int data;
         private Node next;
@@ -215,6 +317,7 @@ public class BubbleSort {
 
     public static void main(String[] args) {
         BubbleSort list = new BubbleSort();
+        BubbleSort list2 = new BubbleSort();
         list.insertLast(12);
         list.insertLast(10);
         list.insertLast(20);
@@ -231,5 +334,18 @@ public class BubbleSort {
         list.display();
         list.mergeSort();
         list.display();
+        list.reverse();
+        list.display();
+        list.reverseIterative();
+        list.display();
+        list.reverseBetween(4, 9);
+        list.display();
+        list2.insertLast(1);
+        list2.insertLast(2);
+        list2.insertLast(3);
+        list2.insertLast(2);
+        list2.insertLast(1);
+        System.out.println(list2.isPalindrome());
+        list2.display();
     }
 }
