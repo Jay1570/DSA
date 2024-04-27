@@ -240,24 +240,29 @@ public class BubbleSort {
         return prev;
     }
     public boolean isPalindrome() {
-        tail = get(size - 1);
-        return isPalindrome(head);
+        boolean ans = isPalindrome(head);
+        return ans;
     }
     private boolean isPalindrome(Node head) {
         Node mid = getMid(head);
-        Node secondHalf = reverseIterative(mid);
-        Node head2 = secondHalf;
-
+        Node secondHalf = mid.next;
+        mid.next = null;
+        Node head2 = reverseIterative(secondHalf);
+        Node temp = head;
+        Node temp2 = head2;
+        boolean is = true;
         // compare both the halves
-        while (head != null && secondHalf != null) {
-            if (head.data != secondHalf.data) {
+        while (temp != null && temp2 != null) {
+            if (temp.data != temp2.data) {
+                is = false;
                 break;
             }
-            head = head.next;
-            secondHalf = secondHalf.next;
+            temp = temp.next;
+            temp2 = temp2.next;
         }
         reverseIterative(head2);
-        return head == null || secondHalf == null;
+        mid.next = secondHalf;
+        return is;
     }
 
     public void reverseBetween(int left, int right) {
@@ -270,21 +275,21 @@ public class BubbleSort {
             return head;
         }
         //skip left - 1 nodes
-        Node pres = head;
+        Node current = head;
         Node prev = null;
 
-        for (int i = 0; pres != null && i < left - 1; i++) {
-            prev = pres;
-            pres = pres.next;
+        for (int i = 0; current != null && i < left - 1; i++) {
+            prev = current;
+            current = current.next;
         }
         Node last = prev;
-        Node newEnd = pres;
-        Node next = pres.next;
+        Node newEnd = current;
+        Node next = current.next;
         // reverse between left and right
-        for (int i = 0; pres != null && i < right - left + 1; i++) {
-            pres.next = prev;
-            prev = pres;
-            pres = next;
+        for (int i = 0; current != null && i < right - left + 1; i++) {
+            current.next = prev;
+            prev = current;
+            current = next;
             if (next != null){
                 next = next.next;
             }
@@ -294,7 +299,7 @@ public class BubbleSort {
         } else {
             head = prev;
         }
-        newEnd.next = pres;
+        newEnd.next = current;
         return head;
     }
 
