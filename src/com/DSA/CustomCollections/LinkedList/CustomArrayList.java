@@ -1,4 +1,4 @@
-package com.DSA.CustomCollections;
+package com.DSA.CustomCollections.LinkedList;
 
 import java.util.Arrays;
 

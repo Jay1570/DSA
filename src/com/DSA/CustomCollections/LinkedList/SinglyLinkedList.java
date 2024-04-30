@@ -1,6 +1,4 @@
-package com.DSA.CustomCollections;
-
-import java.util.LinkedList;
+package com.DSA.CustomCollections.LinkedList;
 
 public class SinglyLinkedList<T> {
 

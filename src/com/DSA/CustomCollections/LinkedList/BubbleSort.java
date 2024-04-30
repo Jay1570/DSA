@@ -1,4 +1,4 @@
-package com.DSA.CustomCollections;
+package com.DSA.CustomCollections.LinkedList;
 
 public class BubbleSort {
     private Node head;  // points to the first node of List
