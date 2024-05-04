@@ -10,11 +10,11 @@ import com.DSA.CustomCollections.StackAndQueue.Stack;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-//        singlyLinkedList();
-//        doublyLinkedList();
-//        circularLinkedList();
-//        stack();
-//        queue();
+        singlyLinkedList();
+        doublyLinkedList();
+        circularLinkedList();
+        stack();
+        queue();
         circularQueue();
     }
     static void singlyLinkedList() {
