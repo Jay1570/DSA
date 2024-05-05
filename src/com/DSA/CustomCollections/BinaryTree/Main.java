@@ -4,8 +4,9 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        binaryTree();
+        //binaryTree();
         //binarySearchTree();
+        avl();
     }
     static void binaryTree () {
         BinaryTree tree = new BinaryTree();
@@ -21,8 +22,17 @@ public class Main {
     }
     static void binarySearchTree () {
         BinarySearchTree bst = new BinarySearchTree();
-        bst.insert(new int[]{15,21,12,5,22,18,6,32,14,4,19,17,13,15});
+        bst.insert(new int[]{15,21,12,5,22,18,6,32,14,4,19,17,13,32,11,10});
         bst.display();
+        System.out.println(bst.balanced());
+    }
+    static void avl() {
+        AVL bst = new AVL();
+        for (int i = 0; i < 18; i++) {
+            bst.insert(5*i);
+        }
+        bst.display();
+        System.out.println(bst.height());
         System.out.println(bst.balanced());
     }
 }
