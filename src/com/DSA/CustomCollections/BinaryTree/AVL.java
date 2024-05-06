@@ -61,7 +61,8 @@ public class AVL {
 
     private Node insert (int data, Node node) {
         if (node == null) {
-            return new Node(data);
+            node = new Node(data);
+            return node;
         }
         if (data < node.data) {
             node.left = insert(data, node.left);
