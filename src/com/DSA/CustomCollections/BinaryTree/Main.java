@@ -28,10 +28,11 @@ public class Main {
     }
     static void avl() {
         AVL bst = new AVL();
-        for (int i = 0; i < 18; i++) {
-            bst.insert(5*i);
+        for (int i = 1; i <= 17; i++) {
+            bst.insert(i);
         }
         bst.display();
+        bst.preOrder();
         System.out.println(bst.height());
         System.out.println(bst.balanced());
     }

@@ -53,7 +53,7 @@ public class BinarySearchTree {
         if (data > node.data) {
             node.right = insert(data, node.right);
         }
-        node.height = Math.max(height(node.left), height(node.right)) + 1;
+        node.height = max(height(node.left), height(node.right)) + 1;
         return node;
     }
 
@@ -72,6 +72,10 @@ public class BinarySearchTree {
             return true;
         }
         return Math.abs(height(node.left) - height(node.right)) <= 1 && balanced(node.left) && balanced(node.right);
+    }
+
+    private int max (int a, int b) {
+        return (a > b) ? a : b;
     }
 
     public static class Node {

@@ -22,6 +22,19 @@ public class AVL {
         return root == null;
     }
 
+    public void preOrder () {
+        preOrder(root);
+    }
+
+    private void preOrder(Node node) {
+        if (node == null) {
+            return;
+        }
+        System.out.print(node.data + " -> ");
+        preOrder(node.left);
+        preOrder(node.right);
+    }
+
     public void display () {
         display(root, 0);
     }
@@ -48,8 +61,7 @@ public class AVL {
 
     private Node insert (int data, Node node) {
         if (node == null) {
-            node = new Node(data);
-            return node;
+            return new Node(data);
         }
         if (data < node.data) {
             node.left = insert(data, node.left);
@@ -58,12 +70,13 @@ public class AVL {
             node.right = insert(data, node.right);
         }
         node.height = Math.max(height(node.left), height(node.right)) + 1;
-        return rotate(node);
+
+        return rotate(node, data);
     }
 
-    private Node rotate(Node node) {
+    private Node rotate(Node node, int data) {
         int diff = height(node.left) - height(node.right);
-        if (diff > 1) {
+        if(diff >1) {
             //left heavy
             int diffLeft = height(node.left.left) - height(node.left.right);
             if (diffLeft > 0) {
@@ -78,12 +91,12 @@ public class AVL {
         }
         if (diff < -1) {
             //right heavy
-            int diffRight = height(node.right.right) - height(node.right.left);
-            if (diffRight > 0) {
+            int diffRight = height(node.right.left) - height(node.right.right);
+            if (diffRight < 0) {
                 //right-right case
                 return leftRotate(node);
             }
-            if (diffRight < 0) {
+            if (diffRight > 0) {
                 //right-left case
                 node.right = rightRotate(node.right);
                 return leftRotate(node);
@@ -92,17 +105,17 @@ public class AVL {
         return node;
     }
 
-    private Node leftRotate(Node c) {
-        Node p = c.right;
-        Node t = p.left;
+    private Node leftRotate(Node p) {
+        Node c = p.right;
+        Node t = c.left;
 
-        p.left = c;
-        c.right = t;
+        c.left = p;
+        p.right = t;
 
-        p.height = Math.max(height(p.left),height(p.right)+1);
-        c.height = Math.max(height(c.left),height(c.right)+1);
+        p.height = Math.max(height(p.left),height(p.right)) + 1;
+        c.height = Math.max(height(c.left),height(c.right)) + 1;
 
-        return p;
+        return c;
     }
 
     private Node rightRotate(Node p) {
@@ -112,8 +125,8 @@ public class AVL {
         c.right = p;
         p.left = t;
 
-        p.height = Math.max(height(p.left),height(p.right)+1);
-        c.height = Math.max(height(c.left),height(c.right)+1);
+        p.height = Math.max(height(p.left),height(p.right)) + 1;
+        c.height = Math.max(height(c.left),height(c.right)) + 1;
 
         return c;
     }
