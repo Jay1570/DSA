@@ -64,15 +64,15 @@ public class RotatedBinarySearch {
             // if elements at middle, start and end are equal just skip
             if(arr[m] == arr[s] && arr[m] == arr[e]) {
                 // check if start and end is pivot
-                if(arr[s] > arr[s+1]) {
+                if(s < e && arr[s] > arr[s+1]) {
                     return s;
                 }
                 s++;
-                if(arr[e] < arr[e-1]) {
+                if(e > s && arr[e] < arr[e-1]) {
                     return e;
                 }
                 e--;
-            } else if(arr[s] > arr[m] || (arr[s] == arr[m] && arr[e] < arr[m])) {
+            } else if(arr[s] < arr[m] || (arr[s] == arr[m] && arr[e] < arr[m])) {
                 s = m + 1;
             } else {
                 e = m - 1;
