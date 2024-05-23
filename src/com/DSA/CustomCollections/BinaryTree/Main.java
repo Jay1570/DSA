@@ -6,8 +6,8 @@ public class Main {
     public static void main(String[] args) {
         //binaryTree();
         //binarySearchTree();
-        //avl();
-        segmentTree();
+        avl();
+        //segmentTree();
     }
     static void binaryTree () {
         BinaryTree tree = new BinaryTree();
@@ -36,6 +36,7 @@ public class Main {
         bst.preOrder();
         System.out.println(bst.height());
         System.out.println(bst.balanced());
+        bst.bfs();
     }
     static void segmentTree() {
         int[] arr = {3,8,6,7,-2,-8,4,9};

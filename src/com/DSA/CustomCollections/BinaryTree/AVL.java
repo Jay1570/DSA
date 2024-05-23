@@ -1,5 +1,10 @@
 package com.DSA.CustomCollections.BinaryTree;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 public class AVL {
 
     private Node root;
@@ -147,6 +152,50 @@ public class AVL {
             return true;
         }
         return Math.abs(height(node.left) - height(node.right)) <= 1 && balanced(node.left) && balanced(node.right);
+    }
+
+    public void bfs() {
+        System.out.println(bfs(root));
+    }
+
+    //my implementation
+    private void bfs1(Node node, Queue<Node> queue) {
+        System.out.print(node.data + " -> ");
+
+        if (node.left != null){
+            queue.add(node.left);
+        }
+        if (node.right != null){
+            queue.add(node.right);
+        }
+        if (!queue.isEmpty())
+            bfs1(queue.remove(), queue);
+    }
+
+    //better version
+    private List<List<Integer>> bfs(Node node) {
+        if (node == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(node);
+        while(!queue.isEmpty()) {
+            int level = queue.size();
+            List<Integer> current= new ArrayList<>(level);
+            for (int i = 0; i < level; i++) {
+                Node currentNode = queue.poll();
+                current.add(currentNode.data);
+                if (currentNode.left != null) {
+                    queue.offer(currentNode.left);
+                }
+                if (currentNode.right != null) {
+                    queue.offer(currentNode.right);
+                }
+            }
+            result.add(current);
+        }
+        return result;
     }
 
     public static class Node {
