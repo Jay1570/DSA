@@ -57,11 +57,23 @@ public class BinarySearchTree {
         return node;
     }
 
-    public void insert (int[] data) {
-        for (int val : data) {
-            root = insert(val, root);
+    public void insert(int[] nums) {
+        if(nums == null || nums.length == 0) {
+            return;
         }
+        root = insert (nums, 0, nums.length - 1);
     }
+    private Node insert (int[] nums, int start, int end) {
+        if (start > end) {
+            return null;
+        }
+        int mid = start + (end - start) / 2;
+        Node root = new Node(nums[mid]);
+        root.left = insert(nums, start, mid - 1);
+        root.right = insert(nums, mid + 1, end);
+        return root;
+    }
+
 
     public boolean balanced () {
         return balanced(root);

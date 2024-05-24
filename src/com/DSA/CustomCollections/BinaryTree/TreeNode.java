@@ -252,3 +252,77 @@ class Problem101 {
         return check(left.left, right.right) && check(left.right, right.left);
     }
 }
+
+class Problem543 {
+    int diameter = 0;
+    public int diameterOfBinaryTree(TreeNode root) {
+        height(root);
+        return diameter - 1;
+    }
+    int height(TreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+
+        int left = height(node.left);
+        int right = height(node.right);
+        diameter = Math.max(diameter, left + right + 1);
+        return (Math.max(left, right) + 1);
+    }
+}
+
+class Problem226 {
+    public TreeNode invertTree(TreeNode root) {
+        if(root == null) {
+            return null;
+        }
+
+        TreeNode left = invertTree(root.left);
+        TreeNode right = invertTree(root.right);
+
+        root.left = right;
+        root.right = left;
+
+        return root;
+    }
+}
+
+class Problem108 {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if(nums == null || nums.length == 0) {
+            return null;
+        }
+        return insert (nums, 0, nums.length - 1);
+    }
+    private TreeNode insert (int[] nums, int start, int end) {
+        if (start > end) {
+            return null;
+        }
+        int mid = start + (end - start) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = insert(nums, start, mid - 1);
+        root.right = insert(nums, mid + 1, end);
+        return root;
+    }
+}
+
+class Problem114 {
+    public void flatten(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeNode current = root;
+        while (current != null) {
+            if(current.left != null) {
+                TreeNode temp = current.left;
+                while (temp.right != null) {
+                    temp = temp.right;
+                }
+                temp.right = current.right;
+                current.right = current.left;
+                current.left = null;
+            }
+            current = current.right;
+        }
+    }
+}

@@ -8,6 +8,7 @@ import java.util.Queue;
 public class AVL {
 
     private Node root;
+    private int diameter;
 
     public AVL() {
     }
@@ -196,6 +197,22 @@ public class AVL {
             result.add(current);
         }
         return result;
+    }
+
+    public int diameterOfBinaryTree() {
+        height1(root);
+        return diameter - 1;
+    }
+
+    private int height1(Node node) {
+        if (node == null) {
+            return 0;
+        }
+
+        int left = height1(node.left);
+        int right = height1(node.right);
+        diameter = Math.max(diameter, left + right + 1);
+        return (Math.max(left, right) + 1);
     }
 
     public static class Node {

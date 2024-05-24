@@ -5,8 +5,8 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         //binaryTree();
-        //binarySearchTree();
-        avl();
+        binarySearchTree();
+        //avl();
         //segmentTree();
     }
     static void binaryTree () {
@@ -23,7 +23,7 @@ public class Main {
     }
     static void binarySearchTree () {
         BinarySearchTree bst = new BinarySearchTree();
-        bst.insert(new int[]{15,21,12,5,22,18,6,32,14,4,19,17,13,32,11,10});
+        bst.insert(new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17});
         bst.display();
         System.out.println(bst.balanced());
     }
@@ -37,6 +37,7 @@ public class Main {
         System.out.println(bst.height());
         System.out.println(bst.balanced());
         bst.bfs();
+        System.out.println(bst.diameterOfBinaryTree());
     }
     static void segmentTree() {
         int[] arr = {3,8,6,7,-2,-8,4,9};
