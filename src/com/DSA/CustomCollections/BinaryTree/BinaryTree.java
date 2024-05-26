@@ -96,6 +96,29 @@ public class BinaryTree {
         System.out.print(node.data + " -> ");
     }
 
+    int i = 0;
+    int p = 0;
+
+    public void buildTree(int[] preorder, int[] inorder) {
+        root = helper(preorder, inorder, Integer.MIN_VALUE);
+    }
+
+    private Node helper(int[] pre, int[] in, int stop) {
+        if (p >= pre.length) {
+            return null;
+        }
+
+        if (in[i] == stop) {
+            i++;
+            return null;
+        }
+
+        Node root = new Node(pre[p++]);
+        root.left = helper(pre, in, root.data);
+        root.right = helper(pre, in, stop);
+        return root;
+    }
+
     private static class Node {
         int data;
         Node left;

@@ -232,6 +232,7 @@ class Problem993 {
     }
 }
 
+//check if left and right side of tree is mirrored or not
 class Problem101 {
     public boolean isSymmetric(TreeNode root) {
         if (root == null) {
@@ -253,6 +254,7 @@ class Problem101 {
     }
 }
 
+//return longest possible path from tree. it may or may not pass through root node
 class Problem543 {
     int diameter = 0;
     public int diameterOfBinaryTree(TreeNode root) {
@@ -271,6 +273,7 @@ class Problem543 {
     }
 }
 
+//invert given tree.for example swap all the left side of nodes with right side of nodes
 class Problem226 {
     public TreeNode invertTree(TreeNode root) {
         if(root == null) {
@@ -287,6 +290,7 @@ class Problem226 {
     }
 }
 
+//insert a sorted array in binary tree in a way that tree is balanced
 class Problem108 {
     public TreeNode sortedArrayToBST(int[] nums) {
         if(nums == null || nums.length == 0) {
@@ -306,6 +310,7 @@ class Problem108 {
     }
 }
 
+//convert given tree into LinkedList in preOrder form in a way that all the left nodes of the tree will be null
 class Problem114 {
     public void flatten(TreeNode root) {
         if (root == null) {
@@ -324,5 +329,183 @@ class Problem114 {
             }
             current = current.right;
         }
+    }
+}
+
+//validate binary search tree
+class Problem98 {
+    public boolean isValidBST(TreeNode root) {
+        return validate(root, null, null);
+    }
+    private boolean validate(TreeNode node, Integer low, Integer high) {
+        if (node == null) {
+            return true;
+        }
+        if ((low != null && node.val <= low) || (high != null && node.val >= high)) {
+            return false;
+        }
+        return (validate(node.left, low, node.val) && validate(node.right, node.val, high));
+    }
+}
+
+//lowest common ancestor in binary tree
+class Problem236 {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) {
+            return null;
+        }
+        if (root == p || root == q) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+        if (left != null && right != null) {
+            return root;
+        }
+        return left == null ? right : left;
+    }
+}
+
+//find kth smallest element in BST.(1-indexed)
+class Problem230 {
+    int n = 0;
+    public int kthSmallest(TreeNode root, int k) {
+        return smallest(root, k).val;
+    }
+    private TreeNode smallest(TreeNode node, int k) {
+        if (node == null) {
+            return null;
+        }
+        TreeNode left = smallest(node.left, k);
+        if (left != null) {
+            return left;
+        }
+        n++;
+        if (n == k) {
+            return node;
+        }
+        return smallest(node.right, k);
+    }
+}
+
+//create a binary tree based on given preorder and inorder traversal
+class Problem105 {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if (preorder.length == 0) {
+            return null;
+        }
+
+        int r = preorder[0];
+        int index = 0;
+
+        for (int i = 0; i < inorder.length; i++) {
+            if (inorder[i] == r) {
+                index = i;
+            }
+        }
+
+        TreeNode node = new TreeNode(r);
+        node.left = buildTree(Arrays.copyOfRange(preorder, 1, index + 1), Arrays.copyOfRange(inorder, 0, index));
+        node.right = buildTree(Arrays.copyOfRange(preorder, index + 1, preorder.length), Arrays.copyOfRange(inorder, index + 1, preorder.length));
+
+        return node;
+    }
+}
+
+//problem 297. serialize and deserialize binary tree
+class Codec {
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        List<String> list = new ArrayList<>();
+        helper(root, list);
+        return String.join(",", list);
+    }
+
+    private void helper(TreeNode node, List<String> list) {
+        if (node == null) {
+            list.add("null");
+            return;
+        }
+        list.add(String.valueOf(node.val));
+        helper(node.left, list);
+        helper(node.right, list);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if (data == null || data.isEmpty()) {
+            return null;
+        }
+        List<String> list = new ArrayList<>(Arrays.asList(data.split(",")));
+        return helper2(list);
+    }
+
+    private TreeNode helper2(List<String> list) {
+        if (list.get(0).equals("null")) {
+            list.remove(0);
+            return null;
+        }
+        TreeNode node = new TreeNode(Integer.parseInt(list.remove(0)));
+        node.left = helper2(list);
+        node.right = helper2(list);
+        return node;
+    }
+}
+
+//path sum
+class Problem112 {
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return false;
+        }
+        if(root.left == null && root.right == null && root.val == targetSum) {
+            return true;
+        }
+        return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
+    }
+}
+
+//sum root to leaf
+class Problem129 {
+    public int sumNumbers(TreeNode root) {
+        return helper(root, 0);
+    }
+    private int helper(TreeNode node, int sum) {
+        if (node == null) {
+            return 0;
+        }
+
+        sum = sum * 10 + node.val;
+
+        if (node.left == null && node.right == null) {
+            return sum;
+        }
+
+        return helper(node.left, sum) + helper(node.right, sum);
+    }
+}
+
+//maximum path sum
+class Solution {
+    int sum = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        helper(root);
+        return sum;
+    }
+    int helper(TreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+
+        int left = maxPathSum(node.left);
+        int right = maxPathSum(node.right);
+
+        left = Math.max(0,left);
+        right = Math.max(0, right);
+
+        int addition = left + right + node.val;
+        sum = Math.max(sum, addition);
+        return Math.max(left, right) + node.val;
     }
 }

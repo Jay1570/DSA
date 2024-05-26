@@ -4,22 +4,23 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        //binaryTree();
-        binarySearchTree();
+        binaryTree();
+        //binarySearchTree();
         //avl();
         //segmentTree();
     }
     static void binaryTree () {
         BinaryTree tree = new BinaryTree();
-        Scanner s = new Scanner(System.in);
-        tree.populate(s);
+//        Scanner s = new Scanner(System.in);
+//        tree.populate(s);
+//        tree.display();
+//        tree.preOrder();
+//        System.out.println();
+//        tree.inOrder();
+//        System.out.println();
+//        tree.postOrder();
+        tree.buildTree(new int[]{3,9,20,15,7}, new int[]{9,3,15,20,7});
         tree.display();
-        tree.preOrder();
-        System.out.println();
-        tree.inOrder();
-        System.out.println();
-        tree.postOrder();
-
     }
     static void binarySearchTree () {
         BinarySearchTree bst = new BinarySearchTree();
