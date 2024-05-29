@@ -10,12 +10,13 @@ import com.DSA.CustomCollections.StackAndQueue.Stack;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        singlyLinkedList();
-        doublyLinkedList();
-        circularLinkedList();
-        stack();
-        queue();
-        circularQueue();
+//        singlyLinkedList();
+//        doublyLinkedList();
+//        circularLinkedList();
+//        stack();
+//        queue();
+//        circularQueue();
+        heap();
     }
     static void singlyLinkedList() {
         SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
@@ -108,5 +109,14 @@ public class Main {
         queue.insert(56);
         queue.insert(90);
         queue.display();
+    }
+    static void heap() throws Exception {
+        Heap<Integer> heap = new Heap<>();
+        heap.insert(34);
+        heap.insert(45);
+        heap.insert(22);
+        heap.insert(89);
+        heap.insert(76);
+        System.out.println(heap.heapSort());
     }
 }
