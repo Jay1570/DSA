@@ -1,25 +1,21 @@
 package com.DSA.Graphs;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 class Graph<T> {
 
-    private HashMap<T, List<T>> adjacencyList = new HashMap<>();
+    private final HashMap<T, List<T>> adjacencyList = new HashMap<>();
 
     public void addEdge(T u, T v, boolean direction) {
         //direction = true -> directed graph
         //direction = false -> undirected graph
 
-        List<T> listOfU = adjacencyList.getOrDefault(u, new ArrayList<>());
-        listOfU.addLast(v);
-        adjacencyList.put(u, listOfU);
+        adjacencyList.putIfAbsent(u, new ArrayList<>());
+        adjacencyList.get(u).add(v);
 
         if (!direction) {
-            List<T> listOfV = adjacencyList.getOrDefault(v, new ArrayList<>());
-            listOfV.addLast(u);
-            adjacencyList.put(v, listOfV);
+            adjacencyList.putIfAbsent(v, new ArrayList<>());
+            adjacencyList.get(v).add(u);
         }
     }
 
@@ -30,6 +26,52 @@ class Graph<T> {
                 System.out.print(edge + ", ");
             }
             System.out.println();
+        }
+    }
+
+    public void bfs() {
+        HashSet<T> visited = new HashSet<>();
+
+        for(T key : adjacencyList.keySet()) {
+            if (!visited.contains(key)) {
+                bfs(key, visited);
+            }
+        }
+    }
+
+    private void bfs(T node, HashSet<T> visited) {
+        Queue<T> queue = new LinkedList<>();
+        queue.add(node);
+        visited.add(node);
+        while (!queue.isEmpty()) {
+            T front = queue.poll();
+            System.out.print(front + ", ");
+
+            for (T neighbours : adjacencyList.getOrDefault(front, new ArrayList<>())) {
+                if(!visited.contains(neighbours)) {
+                    queue.add(neighbours);
+                    visited.add(neighbours);
+                }
+            }
+        }
+    }
+
+    public void dfs() {
+        HashSet<T> visited = new HashSet<>();
+
+        for (T key: adjacencyList.keySet()) {
+            if (!visited.contains(key)) {
+                dfs(key, visited);
+            }
+        }
+    }
+
+    private void dfs(T node, HashSet<T> visited) {
+        System.out.print(node + ", ");
+        visited.add(node);
+
+        for (T neighbours : adjacencyList.get(node)) {
+            if (!visited.contains(neighbours)) dfs(neighbours, visited);
         }
     }
 }

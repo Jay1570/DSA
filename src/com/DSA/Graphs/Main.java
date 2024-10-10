@@ -15,5 +15,8 @@ public class Main {
             graph.addEdge(u, v, false);
         }
         graph.printAdjList();
+        graph.bfs();
+        System.out.println();
+        graph.dfs();
     }
 }
