@@ -70,8 +70,69 @@ class Graph<T> {
         System.out.print(node + ", ");
         visited.add(node);
 
-        for (T neighbours : adjacencyList.get(node)) {
+        for (T neighbours : adjacencyList.getOrDefault(node, new ArrayList<>())) {
             if (!visited.contains(neighbours)) dfs(neighbours, visited);
         }
+    }
+
+    public boolean detectCycleBFS() {
+        HashSet<T> visited = new HashSet<>();
+        HashMap<T, T> parent = new HashMap<>();
+
+        for (T key : adjacencyList.keySet()) {
+            if (visited.contains(key)) continue;
+            if (detectCycleBFS(key, visited, parent)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean detectCycleBFS(T node, HashSet<T> visited, HashMap<T, T> parent) {
+        Queue<T> queue = new LinkedList<>();
+        queue.add(node);
+        visited.add(node);
+        parent.put(node, null);
+
+        while (!queue.isEmpty()) {
+            T front = queue.poll();
+            for(T neighbour : adjacencyList.getOrDefault(front, new ArrayList<>())) {
+                if (!visited.contains(neighbour)) {
+                    queue.add(neighbour);
+                    visited.add(neighbour);
+                    parent.put(neighbour, front);
+                } else if (parent.get(front) != neighbour) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean detectCycleDFS() {
+        HashSet<T> visited = new HashSet<>();
+
+        for(T key : adjacencyList.keySet()) {
+            if (visited.contains(key)) continue;
+            if (detectCycleDFS(key, visited, null)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean detectCycleDFS(T node, HashSet<T> visited, T parent) {
+        visited.add(node);
+
+        for (T neighbour : adjacencyList.getOrDefault(node, new ArrayList<>())) {
+            if (!visited.contains(neighbour)) {
+                if(detectCycleDFS(neighbour, visited, node)) {
+                    return true;
+                }
+            } else if (!neighbour.equals(parent)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -18,5 +18,8 @@ public class Main {
         graph.bfs();
         System.out.println();
         graph.dfs();
+        System.out.println();
+        System.out.println(graph.detectCycleBFS());
+        System.out.println(graph.detectCycleDFS());
     }
 }
