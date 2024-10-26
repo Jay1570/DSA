@@ -12,14 +12,14 @@ public class Main {
         for (int i = 0; i < edges; i++) {
             int u = s.nextInt();
             int v = s.nextInt();
-            graph.addEdge(u, v, false);
+            graph.addEdge(u, v, true);
         }
         graph.printAdjList();
         graph.bfs();
         System.out.println();
         graph.dfs();
         System.out.println();
-        System.out.println(graph.detectCycleBFS());
-        System.out.println(graph.detectCycleDFS());
+        System.out.println(graph.detectCycleDirected());
+        System.out.println(graph.detectCycleDirected());
     }
 }

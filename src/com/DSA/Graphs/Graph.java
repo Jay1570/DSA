@@ -1,6 +1,11 @@
 package com.DSA.Graphs;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 
 class Graph<T> {
 
@@ -133,6 +138,35 @@ class Graph<T> {
                 return true;
             }
         }
+        return false;
+    }
+
+    public boolean detectCycleDirected() {
+        HashSet<T> visited = new HashSet<>();
+
+        for (T key : adjacencyList.keySet()) {
+            if (visited.contains(key)) continue;
+            if (detectCycleDirected(key, visited, new HashSet<>())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean detectCycleDirected(T node, HashSet<T> visited, HashSet<T> recursionStack) {
+        visited.add(node);
+        recursionStack.add(node);
+
+        for (T neighbour : adjacencyList.getOrDefault(node, new ArrayList<>())) {
+            if (!visited.contains(neighbour)) {
+                if (detectCycleDirected(neighbour, visited, recursionStack)) {
+                    return true;
+                }
+            } else if (recursionStack.contains(neighbour)) {
+                return true;
+            }
+        }
+        recursionStack.remove(node);
         return false;
     }
 }
