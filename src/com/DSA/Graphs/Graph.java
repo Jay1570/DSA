@@ -83,6 +83,7 @@ class Graph<T> {
             System.out.println("Detect Cycle BFS :- " + detectCycleBFS());
             System.out.println("Detect Cycle DFS :- " + detectCycleDFS());
         } else {
+            System.out.println("Detect Cycle BFS(Kahn's Algo) :- " + detectCycleDirectedBFS());
             System.out.println("Detect Cycle DFS :- " + detectCycleDirectedDFS());
         }
     }
@@ -177,6 +178,33 @@ class Graph<T> {
         return false;
     }
 
+    private boolean detectCycleDirectedBFS() {
+        HashMap<T, Integer> inDegree = new HashMap<>();
+
+        for (T node : adjacencyList.keySet()) {
+            for (T neighbour : adjacencyList.getOrDefault(node, new ArrayList<>())) {
+                inDegree.put(neighbour, inDegree.getOrDefault(neighbour, 0) + 1);
+            }
+        }
+        Queue<T> queue = new LinkedList<>();
+        for (T node : adjacencyList.keySet()) {
+            if (inDegree.getOrDefault(node, 0) == 0)
+                queue.add(node);
+        }
+
+        int count = 0;
+        while (!queue.isEmpty()) {
+            T front = queue.poll();
+            count++;
+            for (T neighbour : adjacencyList.getOrDefault(front, new ArrayList<>())) {
+                inDegree.put(neighbour, inDegree.get(neighbour) - 1);
+                if (inDegree.get(neighbour) == 0)
+                    queue.add(neighbour);
+            }
+        }
+        return count != adjacencyList.size();
+    }
+
     /*
     * Topological Sort
     * Can be performed only on Directed Acyclic Graphs
@@ -241,11 +269,9 @@ class Graph<T> {
             if (inDegree.getOrDefault(node, 0) == 0)
                 queue.add(node);
         }
-
         while (!queue.isEmpty()) {
             T front = queue.poll();
             System.out.print(front + ", ");
-
             for (T neighbour : adjacencyList.getOrDefault(front, new ArrayList<>())) {
                 inDegree.put(neighbour, inDegree.get(neighbour) - 1);
                 if (inDegree.get(neighbour) == 0)
