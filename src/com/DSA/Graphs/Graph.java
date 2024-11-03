@@ -279,4 +279,44 @@ class Graph<T> {
             }
         }
     }
+
+    public void shortestPath(T source, T destination) {
+        if (!adjacencyList.containsKey(source)) {
+            System.out.println("Source Node does not exists...");
+            return;
+        }
+        if (!adjacencyList.containsKey(destination)) {
+            System.out.println("Destination Node does not exists...");
+            return;
+        }
+        if (!isDirected) {
+            System.out.println("Shortest path between " + source + " and " + destination + " :- " + shortestPathUndirected(source, destination));
+        }
+    }
+
+    private LinkedList<T> shortestPathUndirected(T source, T destination) {
+        Queue<T> queue = new LinkedList<>();
+        HashSet<T> visited = new HashSet<>();
+        HashMap<T, T> parent = new HashMap<>();
+        queue.add(source);
+        visited.add(source);
+        parent.put(source, null);
+        while (!queue.isEmpty()) {
+            T front = queue.poll();
+            for (T neighbour : adjacencyList.getOrDefault(front, new ArrayList<>())) {
+                if (!visited.contains(neighbour)) {
+                    visited.add(neighbour);
+                    parent.put(neighbour, front);
+                    queue.add(neighbour);
+                }
+            }
+        }
+        T p = destination;
+        LinkedList<T> ans = new LinkedList<>();
+        while (p != null) {
+            ans.addFirst(p);
+            p = parent.get(p);
+        }
+        return ans;
+    }
 }

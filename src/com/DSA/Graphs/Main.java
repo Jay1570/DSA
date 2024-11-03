@@ -23,5 +23,10 @@ public class Main {
         System.out.println();
         graph.detectCycle();
         graph.topologicalSort();
+        System.out.print("Enter Source and Destination :- ");
+        int source = s.nextInt();
+        int destination = s.nextInt();
+        graph.shortestPath(source, destination);
+        s.close();
     }
 }
