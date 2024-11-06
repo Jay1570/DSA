@@ -2,31 +2,30 @@ package com.DSA.Graphs;
 
 import java.util.*;
 
-class Graph<T> {
+public class WeightedGraph<T> {
 
-    private final HashMap<T, List<T>> adjList = new HashMap<>();
+    private final HashMap<T, List<Edge<T>>> adjList = new HashMap<>();
     private final boolean isDirected;
 
-    public Graph(boolean isDirected) {
+    public WeightedGraph(boolean isDirected) {
         this.isDirected = isDirected;
     }
 
-    public void addEdge(T u, T v) {
+    public void addEdge(T u, T v, int weight) {
         adjList.putIfAbsent(u, new ArrayList<>());
-        adjList.get(u).add(v);
-
+        adjList.get(u).add(new Edge<>(v, weight));
+        adjList.putIfAbsent(v, new ArrayList<>());
         if (!isDirected) {
-            adjList.putIfAbsent(v, new ArrayList<>());
-            adjList.get(v).add(u);
+            adjList.get(v).add(new Edge<>(u, weight));
         }
     }
 
     public void printAdjList() {
         System.out.println("Adjacency List :-");
-        for (T key : adjList.keySet()) {
-            System.out.print(key + " -> ");
-            for (T edge : adjList.get(key)) {
-                System.out.print(edge + ", ");
+        for (T node : adjList.keySet()) {
+            System.out.print(node + " -> ");
+            for (Edge<T> edge : adjList.getOrDefault(node, new ArrayList<>())) {
+                System.out.print("(" + edge.node + ", weight: " + edge.weight + "), ");
             }
             System.out.println();
         }
@@ -50,10 +49,10 @@ class Graph<T> {
             T front = queue.poll();
             System.out.print(front + ", ");
 
-            for (T neighbours : adjList.getOrDefault(front, new ArrayList<>())) {
-                if(!visited.contains(neighbours)) {
-                    queue.add(neighbours);
-                    visited.add(neighbours);
+            for (Edge<T> neighbours : adjList.getOrDefault(front, new ArrayList<>())) {
+                if(!visited.contains(neighbours.node)) {
+                    queue.add(neighbours.node);
+                    visited.add(neighbours.node);
                 }
             }
         }
@@ -73,8 +72,8 @@ class Graph<T> {
         System.out.print(node + ", ");
         visited.add(node);
 
-        for (T neighbours : adjList.getOrDefault(node, new ArrayList<>())) {
-            if (!visited.contains(neighbours)) dfs(neighbours, visited);
+        for (Edge<T> neighbours : adjList.getOrDefault(node, new ArrayList<>())) {
+            if (!visited.contains(neighbours.node)) dfs(neighbours.node, visited);
         }
     }
 
@@ -109,11 +108,11 @@ class Graph<T> {
 
         while (!queue.isEmpty()) {
             T front = queue.poll();
-            for(T neighbour : adjList.getOrDefault(front, new ArrayList<>())) {
-                if (!visited.contains(neighbour)) {
-                    queue.add(neighbour);
-                    visited.add(neighbour);
-                    parent.put(neighbour, front);
+            for(Edge<T> neighbour : adjList.getOrDefault(front, new ArrayList<>())) {
+                if (!visited.contains(neighbour.node)) {
+                    queue.add(neighbour.node);
+                    visited.add(neighbour.node);
+                    parent.put(neighbour.node, front);
                 } else if (parent.get(front) != neighbour) {
                     return true;
                 }
@@ -137,12 +136,12 @@ class Graph<T> {
     private boolean detectCycleDFS(T node, HashSet<T> visited, T parent) {
         visited.add(node);
 
-        for (T neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
-            if (!visited.contains(neighbour)) {
-                if(detectCycleDFS(neighbour, visited, node)) {
+        for (Edge<T> neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
+            if (!visited.contains(neighbour.node)) {
+                if(detectCycleDFS(neighbour.node, visited, node)) {
                     return true;
                 }
-            } else if (!neighbour.equals(parent)) {
+            } else if (!neighbour.node.equals(parent)) {
                 return true;
             }
         }
@@ -165,12 +164,12 @@ class Graph<T> {
         visited.add(node);
         recursionStack.add(node);
 
-        for (T neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
-            if (!visited.contains(neighbour)) {
-                if (detectCycleDirectedDFS(neighbour, visited, recursionStack)) {
+        for (Edge<T> neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
+            if (!visited.contains(neighbour.node)) {
+                if (detectCycleDirectedDFS(neighbour.node, visited, recursionStack)) {
                     return true;
                 }
-            } else if (recursionStack.contains(neighbour)) {
+            } else if (recursionStack.contains(neighbour.node)) {
                 return true;
             }
         }
@@ -182,8 +181,8 @@ class Graph<T> {
         HashMap<T, Integer> inDegree = new HashMap<>();
 
         for (T node : adjList.keySet()) {
-            for (T neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
-                inDegree.put(neighbour, inDegree.getOrDefault(neighbour, 0) + 1);
+            for (Edge<T> neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
+                inDegree.put(neighbour.node, inDegree.getOrDefault(neighbour.node, 0) + 1);
             }
         }
         Queue<T> queue = new LinkedList<>();
@@ -196,22 +195,22 @@ class Graph<T> {
         while (!queue.isEmpty()) {
             T front = queue.poll();
             count++;
-            for (T neighbour : adjList.getOrDefault(front, new ArrayList<>())) {
-                inDegree.put(neighbour, inDegree.get(neighbour) - 1);
-                if (inDegree.get(neighbour) == 0)
-                    queue.add(neighbour);
+            for (Edge<T> neighbour : adjList.getOrDefault(front, new ArrayList<>())) {
+                inDegree.put(neighbour.node, inDegree.get(neighbour.node) - 1);
+                if (inDegree.get(neighbour.node) == 0)
+                    queue.add(neighbour.node);
             }
         }
         return count != adjList.size();
     }
 
     /*
-    * Topological Sort
-    * Can be performed only on Directed Acyclic Graphs
-    * It is linear order of vertices such that
-    * for every edge u -> v,
-    * u always appears before v in that ordering
-    */
+     * Topological Sort
+     * Can be performed only on Directed Acyclic Graphs
+     * It is linear order of vertices such that
+     * for every edge u -> v,
+     * u always appears before v in that ordering
+     */
 
     public void topologicalSort() {
         if (!isDirected) {
@@ -224,13 +223,16 @@ class Graph<T> {
         }
         System.out.println("Topological Sort :-");
         System.out.print("DFS :- ");
-        topologicalSortDFS();
+        Stack<T> s = topologicalSortDFS();
+        while (!s.isEmpty()) {
+            System.out.print(s.pop() + ", ");
+        }
         System.out.print("\nKahn's Algorithm(BFS) :- ");
         topologicalSortBFS();
         System.out.println();
     }
 
-    private void topologicalSortDFS() {
+    private Stack<T> topologicalSortDFS() {
         HashSet<T> visited = new HashSet<>();
         Stack<T> s = new Stack<>();
 
@@ -239,16 +241,14 @@ class Graph<T> {
                 topologicalSortDFS(node, visited, s);
             }
         }
-        while (!s.isEmpty()) {
-            System.out.print(s.pop() + ", ");
-        }
+        return s;
     }
 
     private void topologicalSortDFS(T node, HashSet<T> visited, Stack<T> s) {
         visited.add(node);
-        for (T neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
-            if (!visited.contains(neighbour)) {
-                topologicalSortDFS(neighbour, visited, s);
+        for (Edge<T> neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
+            if (!visited.contains(neighbour.node)) {
+                topologicalSortDFS(neighbour.node, visited, s);
             }
         }
         s.push(node);
@@ -260,8 +260,8 @@ class Graph<T> {
         HashMap<T, Integer> inDegree = new HashMap<>();
 
         for (T node : adjList.keySet()) {
-            for (T neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
-                inDegree.put(neighbour, inDegree.getOrDefault(neighbour, 0) + 1);
+            for (Edge<T> neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
+                inDegree.put(neighbour.node, inDegree.getOrDefault(neighbour.node, 0) + 1);
             }
         }
         Queue<T> queue = new LinkedList<>();
@@ -272,51 +272,46 @@ class Graph<T> {
         while (!queue.isEmpty()) {
             T front = queue.poll();
             System.out.print(front + ", ");
-            for (T neighbour : adjList.getOrDefault(front, new ArrayList<>())) {
-                inDegree.put(neighbour, inDegree.get(neighbour) - 1);
-                if (inDegree.get(neighbour) == 0)
-                    queue.add(neighbour);
+            for (Edge<T> neighbour : adjList.getOrDefault(front, new ArrayList<>())) {
+                inDegree.put(neighbour.node, inDegree.get(neighbour.node) - 1);
+                if (inDegree.get(neighbour.node) == 0)
+                    queue.add(neighbour.node);
             }
         }
     }
 
-    public void shortestPath(T source, T destination) {
-        if (!adjList.containsKey(source)) {
-            System.out.println("Source Node does not exists...");
-            return;
-        }
-        if (!adjList.containsKey(destination)) {
-            System.out.println("Destination Node does not exists...");
-            return;
-        }
-        if (!isDirected) {
-            System.out.println("Shortest path between " + source + " and " + destination + " :- " + shortestPathUndirected(source, destination));
-        }
-    }
+    public void shortestPathToAllNodeFromSource(T source) {
+        Stack<T> topoSort = topologicalSortDFS();
+        HashMap<T, Integer> dist = new HashMap<>();
 
-    private LinkedList<T> shortestPathUndirected(T source, T destination) {
-        Queue<T> queue = new LinkedList<>();
-        HashSet<T> visited = new HashSet<>();
-        HashMap<T, T> parent = new HashMap<>();
-        queue.add(source);
-        visited.add(source);
-        parent.put(source, null);
-        while (!queue.isEmpty()) {
-            T front = queue.poll();
-            for (T neighbour : adjList.getOrDefault(front, new ArrayList<>())) {
-                if (!visited.contains(neighbour)) {
-                    visited.add(neighbour);
-                    parent.put(neighbour, front);
-                    queue.add(neighbour);
+        for(T key : adjList.keySet()) {
+            dist.put(key, Integer.MAX_VALUE);
+        }
+        dist.put(source, 0);
+        while (!topoSort.isEmpty()) {
+            T top = topoSort.pop();
+
+            if (dist.get(top) != Integer.MAX_VALUE) {
+                for (Edge<T> edge : adjList.getOrDefault(top, new ArrayList<>())) {
+                    if (dist.get(top) + edge.weight < dist.get(edge.node)) {
+                        dist.put(edge.node, dist.get(top) + edge.weight);
+                    }
                 }
             }
         }
-        T p = destination;
-        LinkedList<T> ans = new LinkedList<>();
-        while (p != null) {
-            ans.addFirst(p);
-            p = parent.get(p);
+        System.out.println("Shortest Distance is :- ");
+        for (T node : dist.keySet()) {
+            System.out.println(node + " -> " + dist.get(node));
         }
-        return ans;
+    }
+
+    static class Edge<T> {
+        T node;
+        int weight;
+
+        Edge(T node, int weight) {
+            this.node = node;
+            this.weight = weight;
+        }
     }
 }

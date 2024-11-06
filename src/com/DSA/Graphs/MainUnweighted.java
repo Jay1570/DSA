@@ -2,7 +2,7 @@ package com.DSA.Graphs;
 
 import java.util.Scanner;
 
-public class Main {
+public class MainUnweighted {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
         System.out.print("Is it Directed Graph?(true/false) :- ");
