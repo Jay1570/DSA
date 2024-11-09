@@ -26,7 +26,7 @@ public class MainWeighted {
         graph.topologicalSort();
         System.out.print("Enter Source :- ");
         int source = s.nextInt();
-        graph.shortestPathToAllNodeFromSource(source);
+        graph.shortestPath(source);
         s.close();
     }
 }

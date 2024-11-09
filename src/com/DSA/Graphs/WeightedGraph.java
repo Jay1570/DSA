@@ -280,7 +280,20 @@ public class WeightedGraph<T> {
         }
     }
 
-    public void shortestPathToAllNodeFromSource(T source) {
+    public void shortestPath(T source) {
+        if (isDirected) {
+            System.out.println("Using Topological Sort :- ");
+            shortestPathToAllNodeFromSource(source);
+        }
+        System.out.println("Dijkstra's Algorithm :- ");
+        dijkstra(source);
+    }
+
+    private void shortestPathToAllNodeFromSource(T source) {
+        if (detectCycleDirectedDFS()) {
+            System.out.println("Graph has to be Directed Acyclic Graph");
+            return;
+        }
         Stack<T> topoSort = topologicalSortDFS();
         HashMap<T, Integer> dist = new HashMap<>();
 
@@ -293,13 +306,44 @@ public class WeightedGraph<T> {
 
             if (dist.get(top) != Integer.MAX_VALUE) {
                 for (Edge<T> edge : adjList.getOrDefault(top, new ArrayList<>())) {
-                    if (dist.get(top) + edge.weight < dist.get(edge.node)) {
-                        dist.put(edge.node, dist.get(top) + edge.weight);
+                    int newDist = dist.get(top) + edge.weight;
+                    if (newDist < dist.get(edge.node)) {
+                        dist.put(edge.node, newDist);
                     }
                 }
             }
         }
         System.out.println("Shortest Distance is :- ");
+        for (T node : dist.keySet()) {
+            System.out.println(node + " -> " + dist.get(node));
+        }
+    }
+
+    //dijkstra's algorithm for shortest path
+    private void dijkstra(T source) {
+        PriorityQueue<Edge<T>> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
+        HashMap<T, Integer> dist = new HashMap<>();
+
+        for (T node : adjList.keySet()) {
+            dist.put(node, Integer.MAX_VALUE);
+        }
+
+        dist.put(source, 0);
+        pq.add(new Edge<>(source, 0));
+
+        while (!pq.isEmpty()) {
+            Edge<T> currentEdge = pq.poll();
+
+            for (Edge<T> edge : adjList.getOrDefault(currentEdge.node, new ArrayList<>())) {
+                int newDist = dist.get(currentEdge.node) + edge.weight;
+
+                if (newDist < dist.get(edge.node)) {
+                    dist.put(edge.node, newDist);
+                    pq.offer(new Edge<>(edge.node, newDist));
+                }
+            }
+        }
+        System.out.println("Shortest Paths :- ");
         for (T node : dist.keySet()) {
             System.out.println(node + " -> " + dist.get(node));
         }
