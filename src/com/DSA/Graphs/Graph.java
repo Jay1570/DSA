@@ -30,14 +30,7 @@ public class Graph<T> {
     }
 
     public void printAdjList() {
-        System.out.println("Adjacency List :- ");
-        for (T value : nodes.keySet()) {
-            Node<T> node = nodes.get(value);
-            for (Edge<T> edge : node.edges) {
-                System.out.print("(" + edge.destination.value + ", weight:" + edge.weight + "), ");
-            }
-            System.out.println();
-        }
+        System.out.println(this);
     }
 
     public void bfs() {
@@ -359,6 +352,73 @@ public class Graph<T> {
             System.out.println(node + " -> " + dist.get(node));
         }
     }
+    public void minimumSpanningTree() {
+        System.out.println(primsMST());
+    }
+
+    private HashMap<T, List<Edge<T>>> primsMST() {
+        HashMap<T, Integer> key = new HashMap<>();
+        HashSet<T> mst = new HashSet<>();
+        HashMap<T, T> parent = new HashMap<>();
+
+        for (T value : nodes.keySet()) {
+            key.put(value, Integer.MAX_VALUE);
+            parent.put(value, null);
+        }
+
+        key.put(nodes.keySet().iterator().next(), 0);
+
+        for (T i : nodes.keySet()) {
+            int min = Integer.MAX_VALUE;
+            T u = null;
+
+            for (T v : nodes.keySet()) {
+                if (!mst.contains(v) && key.get(v) < min) {
+                    u = v;
+                    min = key.get(v);
+                }
+            }
+
+            mst.add(u);
+
+            for (Edge<T> e : nodes.get(u).edges) {
+                T v = e.destination.value;
+                int w = e.weight;
+
+                if (!mst.contains(v) && w < key.get(v)) {
+                    parent.put(v, u);
+                    key.put(v, w);
+                }
+            }
+        }
+
+        HashMap<T, List<Edge<T>>> ans = new HashMap<>();
+        for (T value : nodes.keySet()) {
+            if (parent.get(value) == null) continue;
+            ans.putIfAbsent(parent.get(value), new ArrayList<>());
+            ans.get(parent.get(value)).add(new Edge<>(nodes.get(value), key.get(value)));
+        }
+        return ans;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Adjacency List :-\n");
+        for (T value : nodes.keySet()) {
+            sb.append(value + " :- ");
+            Node<T> node = nodes.get(value);
+            for (Edge<T> edge : node.edges) {
+                sb.append("(");
+                sb.append(edge.destination.value);
+                sb.append(", weight:");
+                sb.append(edge.weight);
+                sb.append("), ");
+            }
+            sb.delete(sb.length() - 2, sb.length() - 1);
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 
     static class Node<T> {
         T value;
@@ -369,6 +429,7 @@ public class Graph<T> {
             this.edges = new ArrayList<>();
         }
     }
+
     static class Edge<T> {
         Node<T> destination;
         int weight;
@@ -376,6 +437,11 @@ public class Graph<T> {
         Edge(Node<T> destination, int weight) {
             this.destination = destination;
             this.weight = weight;
+        }
+
+        @Override
+        public String toString() {
+            return "(" + destination.value + ", weight: " + weight + ")";
         }
     }
 }

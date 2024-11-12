@@ -34,6 +34,7 @@ public class Main {
         System.out.print("Enter Source :- ");
         int source = s.nextInt();
         graph.shortestPath(source);
+        graph.minimumSpanningTree();
         s.close();
     }
 }
