@@ -34,7 +34,8 @@ public class Main {
         System.out.print("Enter Source :- ");
         int source = s.nextInt();
         graph.shortestPath(source);
-        graph.minimumSpanningTree();
+        System.out.println("Prim's MST :-\n" + graph.primsMST());
+        System.out.println("Kruskal's MST :-\n" + graph.kruskalMST());
         s.close();
     }
 }

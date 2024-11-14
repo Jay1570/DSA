@@ -352,11 +352,8 @@ public class Graph<T> {
             System.out.println(node + " -> " + dist.get(node));
         }
     }
-    public void minimumSpanningTree() {
-        System.out.println(primsMST());
-    }
 
-    private HashMap<T, List<Edge<T>>> primsMST() {
+    public HashMap<T, List<Edge<T>>> primsMST() {
         HashMap<T, Integer> key = new HashMap<>();
         HashSet<T> mst = new HashSet<>();
         HashMap<T, T> parent = new HashMap<>();
@@ -401,11 +398,71 @@ public class Graph<T> {
         return ans;
     }
 
+    /*
+    * Kruskal's Algorithm for Minimum Spanning Tree
+    * It uses Union by Rank and Path Compression method to get MST
+    */
+
+    public HashMap<T, List<Edge<T>>> kruskalMST() {
+        HashMap<T, T> parents = new HashMap<>();
+        HashMap<T, Integer> ranks = new HashMap<>();
+        List<Edges<T>> edges = new ArrayList<>();
+
+        for (T value : nodes.keySet()) {
+            parents.put(value, value);
+            ranks.put(value, 0);
+            Node<T> node = nodes.get(value);
+            for (Edge<T> edge : node.edges) {
+                edges.add(new Edges<>(edge, node.value));
+            }
+        }
+
+        edges.sort(Comparator.comparingInt(e -> e.weight));
+        HashMap<T, List<Edge<T>>> mst = new HashMap<>();
+        for (Edges<T> edge : edges) {
+            T u = findParent(edge.source, parents);
+            T v = findParent(edge.destination, parents);
+            int w = edge.weight;
+
+            if (u != v) {
+                mst.putIfAbsent(edge.source, new ArrayList<>());
+                mst.get(edge.source).add(new Edge<>(nodes.get(edge.destination), w));
+                union(u, v, parents, ranks);
+            }
+        }
+        return mst;
+    }
+
+    //only for kruskal's algorithm
+    private T findParent(T node,HashMap<T, T> parents) {
+        T parent = parents.get(node);
+        if (parent == node) {
+            return parent;
+        }
+        parents.put(node, findParent(parent, parents));
+        return parents.get(node);
+    }
+
+    private void union(T root1, T root2, HashMap<T, T> parents, HashMap<T, Integer> ranks) {
+        T u = findParent(root1, parents);
+        T v = findParent(root2, parents);
+
+        if (ranks.get(u) < ranks.get(v)) {
+            parents.put(u, v);
+        } else if (ranks.get(v) < ranks.get(u)) {
+            parents.put(v, u);
+        } else {
+            parents.put(v, u);
+            ranks.put(u, ranks.get(u) + 1);
+        }
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Adjacency List :-\n");
         for (T value : nodes.keySet()) {
-            sb.append(value + " :- ");
+            sb.append(value);
+            sb.append(" :- ");
             Node<T> node = nodes.get(value);
             for (Edge<T> edge : node.edges) {
                 sb.append("(");
@@ -430,7 +487,7 @@ public class Graph<T> {
         }
     }
 
-    static class Edge<T> {
+    public static class Edge<T> {
         Node<T> destination;
         int weight;
 
@@ -442,6 +499,18 @@ public class Graph<T> {
         @Override
         public String toString() {
             return "(" + destination.value + ", weight: " + weight + ")";
+        }
+    }
+
+    private static class Edges<T> {
+        T source;
+        T destination;
+        int weight;
+
+        Edges(Edge<T> edge, T source) {
+            this.source = source;
+            this.destination = edge.destination.value;
+            this.weight = edge.weight;
         }
     }
 }
