@@ -457,6 +457,51 @@ public class Graph<T> {
         }
     }
 
+    public ArrayList<ArrayList<T>> findBridges() {
+        HashMap<T, Integer> disc = new HashMap<>();
+        HashMap<T, Integer> low = new HashMap<>();
+        HashSet<T> visited = new HashSet<>();
+        int timer = 0;
+
+        for (T value : nodes.keySet()) {
+            disc.put(value, -1);
+            low.put(value, -1);
+        }
+
+        ArrayList<ArrayList<T>> ans = new ArrayList<>();
+
+        for (T value : nodes.keySet()) {
+            if (!visited.contains(value)) {
+                findBridges(value, null, timer, disc, low, visited, ans);
+            }
+        }
+
+        return ans;
+    }
+
+    private void findBridges(T node, T parent, int timer, HashMap<T, Integer> disc, HashMap<T, Integer> low, HashSet<T> visited, ArrayList<ArrayList<T>> ans) {
+        visited.add(node);
+        disc.put(node, timer);
+        low.put(node, timer);
+        timer++;
+
+        for (Edge<T> edge : nodes.get(node).edges) {
+            if (edge.destination.value == parent) {
+                continue;
+            }
+            if (!visited.contains(edge.destination.value)) {
+                findBridges(edge.destination.value, node, timer, disc, low, visited, ans);
+                low.put(node, Integer.min(low.get(node), low.get(edge.destination.value)));
+
+                if (low.get(edge.destination.value) > disc.get(node)) {
+                    ans.add(new ArrayList<>(Arrays.asList(node, edge.destination.value)));
+                }
+            } else {
+                low.put(node, Integer.min(low.get(node), disc.get(edge.destination.value)));
+            }
+        }
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Adjacency List :-\n");

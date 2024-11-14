@@ -36,6 +36,7 @@ public class Main {
         graph.shortestPath(source);
         System.out.println("Prim's MST :-\n" + graph.primsMST());
         System.out.println("Kruskal's MST :-\n" + graph.kruskalMST());
+        System.out.println("Bridges :-\n" + graph.findBridges());
         s.close();
     }
 }
