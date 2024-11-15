@@ -37,6 +37,7 @@ public class Main {
         System.out.println("Prim's MST :-\n" + graph.primsMST());
         System.out.println("Kruskal's MST :-\n" + graph.kruskalMST());
         System.out.println("Bridges :-\n" + graph.findBridges());
+        System.out.println("Articulation Points :-\n" + graph.articulationPoints());
         s.close();
     }
 }

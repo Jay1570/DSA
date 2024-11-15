@@ -457,11 +457,16 @@ public class Graph<T> {
         }
     }
 
+    /*
+    * Bridges are edges in a graph that,
+    * when removed, cause the graph to split into multiple components.
+    */
+
     public ArrayList<ArrayList<T>> findBridges() {
         HashMap<T, Integer> disc = new HashMap<>();
         HashMap<T, Integer> low = new HashMap<>();
         HashSet<T> visited = new HashSet<>();
-        int timer = 0;
+        int[] timer = new int[1];
 
         for (T value : nodes.keySet()) {
             disc.put(value, -1);
@@ -479,11 +484,11 @@ public class Graph<T> {
         return ans;
     }
 
-    private void findBridges(T node, T parent, int timer, HashMap<T, Integer> disc, HashMap<T, Integer> low, HashSet<T> visited, ArrayList<ArrayList<T>> ans) {
+    private void findBridges(T node, T parent, int[] timer, HashMap<T, Integer> disc, HashMap<T, Integer> low, HashSet<T> visited, ArrayList<ArrayList<T>> ans) {
         visited.add(node);
-        disc.put(node, timer);
-        low.put(node, timer);
-        timer++;
+        disc.put(node, timer[0]);
+        low.put(node, timer[0]);
+        timer[0]++;
 
         for (Edge<T> edge : nodes.get(node).edges) {
             if (edge.destination.value == parent) {
@@ -499,6 +504,60 @@ public class Graph<T> {
             } else {
                 low.put(node, Integer.min(low.get(node), disc.get(edge.destination.value)));
             }
+        }
+    }
+
+    /* Articulation Point
+    * Articulation Points are nodes in a graph that,
+    * when removed, cause the graph to split into multiple components
+    */
+
+    public ArrayList<T> articulationPoints() {
+        HashMap<T, Integer> disc = new HashMap<>();
+        HashMap<T, Integer> low = new HashMap<>();
+        HashSet<T> visited = new HashSet<>();
+
+        for (T value : nodes.keySet()) {
+            disc.put(value, -1);
+            low.put(value, -1);
+        }
+
+        int[] timer = new int[1];
+        ArrayList<T> ans  = new ArrayList<>();
+
+        for (T value : nodes.keySet()) {
+            if (!visited.contains(value)) {
+                articulationPoints(value, null, timer, disc, low, visited, ans);
+            }
+        }
+        return ans;
+    }
+
+    private void articulationPoints(T node, T parent, int[] timer, HashMap<T, Integer> disc, HashMap<T, Integer> low, HashSet<T> visited, ArrayList<T> ans) {
+        visited.add(node);
+        disc.put(node, timer[0]);
+        low.put(node, timer[0]);
+        timer[0]++;
+        List<Edge<T>> edges = nodes.get(node).edges;
+
+        for (Edge<T> edge : edges) {
+            if (edge.destination.value == parent) {
+                continue;
+            }
+            if (!visited.contains(edge.destination.value)) {
+                articulationPoints(edge.destination.value, node, timer, disc, low, visited, ans);
+                low.put(node, Integer.min(low.get(node), low.get(edge.destination.value)));
+
+                if (low.get(edge.destination.value) >= disc.get(node) && parent != null) {
+                    ans.add(node);
+                }
+            } else {
+                low.put(node, Integer.min(low.get(node), disc.get(edge.destination.value)));
+            }
+        }
+
+        if (parent == null && edges.size() > 1) {
+            ans.add(node);
         }
     }
 
