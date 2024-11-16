@@ -6,10 +6,12 @@ public class Graph<T> {
 
     private final HashMap<T, Node<T>> nodes;
     private final boolean isDirected;
+    private boolean negativeWeight;
 
     public Graph(boolean isDirected) {
         nodes = new HashMap<>();
         this.isDirected = isDirected;
+        this.negativeWeight = false;
     }
 
     private Node<T> getOrCreateNode(T value) {
@@ -20,6 +22,9 @@ public class Graph<T> {
     }
 
     public void addEdge(T fromValue, T toValue, int weight) {
+        if (weight < 0) {
+            negativeWeight = true;
+        }
         Node<T> fromNode = getOrCreateNode(fromValue);
         Node<T> toNode = getOrCreateNode(toValue);
 
@@ -292,6 +297,8 @@ public class Graph<T> {
         }
         System.out.println("Shortest Path Using Dijkstra's Algorithm :- ");
         dijkstra(source);
+        System.out.println("Shortest Path Using Bellman Ford's Algorithm");
+        bellmanFord(source);
     }
 
     private void shortestPathToAllNodeFromSource(T source) {
@@ -326,6 +333,10 @@ public class Graph<T> {
 
     //dijkstra's algorithm for shortest path
     private void dijkstra(T source) {
+        if (negativeWeight) {
+            System.out.println("This algorithm cannot be applied if there is negative weights");
+            return;
+        }
         PriorityQueue<Edge<T>> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
         HashMap<T, Integer> dist = new HashMap<>();
 
@@ -350,6 +361,47 @@ public class Graph<T> {
         }
         for (T node : dist.keySet()) {
             System.out.println(node + " -> " + dist.get(node));
+        }
+    }
+
+    private void bellmanFord(T source) {
+        List<Edges<T>> edges = new ArrayList<>();
+        HashMap<T, Integer> dist = new HashMap<>();
+        for (T value : nodes.keySet()) {
+            dist.put(value, Integer.MAX_VALUE);
+            Node<T> node = nodes.get(value);
+            for (Edge<T> edge : node.edges) {
+                edges.add(new Edges<>(edge, node.value));
+            }
+        }
+
+        dist.put(source, 0);
+
+        for (T value : nodes.keySet()) {
+            for (Edges<T> edge : edges) {
+                T u = edge.source;
+                T v = edge.destination;
+                int w = edge.weight;
+
+                if (dist.get(u) != Integer.MAX_VALUE && (dist.get(u) + w) < dist.get(v)) {
+                    dist.put(v, dist.get(u) + w);
+                }
+            }
+        }
+        // check for negative cycle
+        for (Edges<T> edge : edges) {
+            T u = edge.source;
+            T v = edge.destination;
+            int w = edge.weight;
+
+            if (dist.get(u) != Integer.MAX_VALUE && (dist.get(u) + w) < dist.get(v)) {
+                System.out.println("Negative Cycle detected.Cannot find shortest paths");
+                return;
+            }
+        }
+
+        for (T value : nodes.keySet()) {
+            System.out.println(value + " -> " + dist.get(value));
         }
     }
 
