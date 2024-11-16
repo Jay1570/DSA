@@ -68,6 +68,7 @@ public class Graph<T> {
         for (T value : nodes.keySet()) {
             if (!visited.contains(value)) dfs(value, visited);
         }
+        System.out.println();
     }
 
     private void dfs(T value, HashSet<T> visited) {
@@ -286,10 +287,10 @@ public class Graph<T> {
 
     public void shortestPath(T source) {
         if (isDirected) {
-            System.out.println("Using Topological Sort :- ");
+            System.out.println("Shortest Path Using Topological Sort :- ");
             shortestPathToAllNodeFromSource(source);
         }
-        System.out.println("Dijkstra's Algorithm :- ");
+        System.out.println("Shortest Path Using Dijkstra's Algorithm :- ");
         dijkstra(source);
     }
 
@@ -347,13 +348,16 @@ public class Graph<T> {
                 }
             }
         }
-        System.out.println("Shortest Paths :- ");
         for (T node : dist.keySet()) {
             System.out.println(node + " -> " + dist.get(node));
         }
     }
 
     public HashMap<T, List<Edge<T>>> primsMST() {
+        if (isDirected) {
+            System.out.println("This algorithm can not be applied to Directed Graphs");
+            return null;
+        }
         HashMap<T, Integer> key = new HashMap<>();
         HashSet<T> mst = new HashSet<>();
         HashMap<T, T> parent = new HashMap<>();
@@ -404,6 +408,10 @@ public class Graph<T> {
     */
 
     public HashMap<T, List<Edge<T>>> kruskalMST() {
+        if (isDirected) {
+            System.out.println("This algorithm can not be applied to Directed Graphs");
+            return null;
+        }
         HashMap<T, T> parents = new HashMap<>();
         HashMap<T, Integer> ranks = new HashMap<>();
         List<Edges<T>> edges = new ArrayList<>();
@@ -558,6 +566,55 @@ public class Graph<T> {
 
         if (parent == null && edges.size() > 1) {
             ans.add(node);
+        }
+    }
+
+    public ArrayList<ArrayList<T>> stronglyConnectedComponents() {
+        if (!isDirected) {
+            System.out.println("Graph must be a directed graph");
+            return null;
+        }
+
+        Stack<T> st = new Stack<>();
+        HashSet<T> visited = new HashSet<>();
+
+        for (T value : nodes.keySet()) {
+            if (!visited.contains(value)) {
+                topologicalSortDFS(value, visited, st);
+            }
+        }
+
+        HashMap<T, Node<T>> transpose = new HashMap<>();
+
+        for (T value : nodes.keySet()) {
+            Node<T> node = nodes.get(value);
+            for (Edge<T> edge : node.edges) {
+                transpose.putIfAbsent(edge.destination.value, new Node<>(edge.destination.value));
+                transpose.putIfAbsent(value, new Node<>(value));
+                transpose.get(edge.destination.value).edges.add(new Edge<>(transpose.get(value), 1));
+            }
+        }
+
+        visited.clear();
+        ArrayList<ArrayList<T>> ans = new ArrayList<>();
+        while (!st.isEmpty()) {
+            T top = st.pop();
+            if (!visited.contains(top)) {
+                ArrayList<T> component = new ArrayList<>();
+                dfs(top, transpose, visited, component);
+                ans.add(component);
+            }
+        }
+
+        return ans;
+    }
+
+    private void dfs(T value, HashMap<T, Node<T>> transpose, HashSet<T> visited, ArrayList<T> component) {
+        visited.add(value);
+        component.add(value);
+
+        for (Edge<T> edge : transpose.get(value).edges) {
+            if (!visited.contains(edge.destination.value)) dfs(edge.destination.value, transpose, visited, component);
         }
     }
 

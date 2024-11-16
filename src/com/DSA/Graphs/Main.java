@@ -30,14 +30,18 @@ public class Main {
         graph.bfs();
         graph.dfs();
         graph.detectCycle();
+        System.out.println("Topological Sort :-");
         graph.topologicalSort();
         System.out.print("Enter Source :- ");
         int source = s.nextInt();
         graph.shortestPath(source);
-        System.out.println("Prim's MST :-\n" + graph.primsMST());
-        System.out.println("Kruskal's MST :-\n" + graph.kruskalMST());
+        System.out.println("Prim's MST :-");
+        System.out.println(graph.primsMST());
+        System.out.println("Kruskal's MST :-");
+        System.out.println(graph.kruskalMST());
         System.out.println("Bridges :-\n" + graph.findBridges());
         System.out.println("Articulation Points :-\n" + graph.articulationPoints());
+        System.out.println("Strongly Connected Components :-\n" + graph.stronglyConnectedComponents());
         s.close();
     }
 }
